@@ -1,0 +1,160 @@
+
+spring:
+  # ### reverse engine config announcment.
+  config:
+    import:
+      - classpath:/reverse-config.yml
+
+  ### configure hibernate via java persistence api (ORM framework)
+  jpa:
+    properties:
+      hibernate:
+        jbdc:
+          time_zone: UTC
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy:  org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        # implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+      use-new-id-generator-mappings: false
+
+  tasks:
+    execution:
+      pool:
+        core-size: 10
+        max-size: 20
+        queue-capacity: 200
+        allow-core-thread-timeout: true
+        keep-alive: 60s 
+
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    druid:
+      primary:
+        driver-class-name: com.mysql.cj.jdbc.Driver 
+        url: jdbc:mysql://192.168.2.108:3306/data?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+        username: changliu
+        password: CityU951027
+
+      secondary:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.2.93:3306/zonglink_amazon_v8?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+        username: data_import
+        password: HKaift-2023!
+
+      tertiary:
+        driver-class-name: com.mysql.cj.jdbc.Driver 
+        url: jdbc:mysql://192.168.2.108:3306/user_info?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+        username: changliu
+        password: CityU951027
+
+      fourth:
+        driver-class-name: com.mysql.cj.jdbc.Driver 
+        url: jdbc:mysql://192.168.2.108:3306/Amazon_Data?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+        username: changliu
+        password: CityU951027
+
+      visualization:
+        driver-class-name: com.mysql.cj.jdbc.Driver 
+        url: jdbc:mysql://192.168.2.108:3306/visualization?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+        username: changliu
+        password: CityU951027
+
+      fifth:
+        driver-class-name: com.mysql.cj.jdbc.Driver 
+        url: jdbc:mysql://192.168.5.148:13306/zonglink_amazon_v8?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+        username: data_read
+        password: CityU@12345
+
+      max-active: 20 # max-connection
+      initial-size: 5 # inital-connection
+      min-idle: 5 # minimum idle count 
+      max-wait: 60000 # ms
+      time-between-eviction-runs-millis: 60000 # ms
+      min-evictable-idle-time-millis: 300000 # ms
+      test-while-idle: true # execute the validation-query before connection 
+      test-on-borrow: false # same to test
+      test-on-return: false # same
+      validation-query: SELECT 1 FROM DUAL # 
+      pool-prepared-statements: true # whether store PreparedStatement，to sql statment frequentlye used can imporve capability
+      max-pool-prepared-statement-per-connection-size: 20 # each connection can store 20 PrepareStatement
+      filters: stat,wall,log4j #  Druid monitor，wall - prevent sql inject，log4j - print log
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 # set Druid monitor with statistic function
+
+      web-stat-filter:
+        # if == false, it means that you need to use WebStatFilter to define the settings
+        enabled: true
+        url-pattern: /*
+        exclusions: /druid/*,*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico
+        session-stat-enable: true
+        principal-session-name: session_name
+        principal-cookie-name: cookie_name
+
+      # StatViewServlet
+      stat-view-servlet:
+        # if == false, it means that you need to use StatViewServlet to define the settings
+        enabled: true
+        # the path
+        url-pattern: /druid/*
+        # no reset function in monitor, not use this in common
+        reset-enable: false
+         # monitor index 
+        login-username: admin
+        login-password: root
+        # ip white list
+        allow:
+        # ip black list
+        deny:
+
+      filter:
+        stat:
+          # log-slow-sql: true ### log sql statement only one is enough
+          slow-sql-millis: 5000
+          merge-sql: true
+          slow-sql-log-level: ERROR
+          slow-sql-exception-threshold-millis: 1000
+          concurrent-max-active: 200 # Maximum concurrency count. 并发数
+          concurrent-max-idle-time: 60000 # maximum idle time
+
+  data:
+    redis:
+      repositories:
+        enabled: false
+    elasticsearch:
+      repositories:
+        enabled: false
+
+server:
+    port: 48499
+#    ssl:
+#      key-store: src/main/resources/keystore.p12
+#      key-store-password: aift
+#      key-store-type: PKCS12
+#      key-alias: myalias
+#OpenAPI
+swagger:
+  openapi:
+    dev-url: https://localhost:48499
+    prod-url: https://localhost:48499
+springdoc:
+  swagger-ui:
+    path: /bezkoder-documentation
+    try-it-out-enabled: true
+    filter: true
+  api-docs:
+    path: /data-visualization-api-docs
+
+
+# logging:
+#   level:
+#     root: INFO
+#     com.example: DEBUG
+#   file:
+#     name: spring-boot-visiualization.log
+#     path: /var/log/spring-boot-visiualization
+#   pattern:
+#     console: "%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+#     file: "%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"

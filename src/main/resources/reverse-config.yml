@@ -1,0 +1,25 @@
+reverse-config:
+  database: visualization
+  tableName: unique_products_by_month_dm_pb
+  ### 108 database ###
+  url: jdbc:mysql://192.168.2.108:3306/visualization?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+  user: changliu
+  password: CityU951027
+
+  # ### 93 database ###
+  # url: jdbc:mysql://192.168.2.93:3306/zonglink_amazon_v8?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+  # user: data_import
+  # password: HKaift-2023!
+
+  fixPath: /src/main/java/
+
+  inputEntityPath: com/aift/lukie/Model/Visualization/
+
+  inputRepositoryPath: com/aift/lukie/Repository/Visualization/
+
+
+
+
+
+
+
